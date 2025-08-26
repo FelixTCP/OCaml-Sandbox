@@ -1,4 +1,4 @@
 (executable
  (public_name calc)
  (name main)
- (libraries calc))
+ (libraries calc camlp-streams))

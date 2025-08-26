@@ -1,36 +1,44 @@
-open Tokens
-
 let end_program () =
     print_endline "Thanks for using the calculator!";
     exit 0
 ;;
 
-let read_line () =
-  try Some(read_line())
-  with End_of_file -> None
+let evaluate_ast (ast) : int =
+  (* Dummy evaluator: counts characters *)
+        
+  ast |> List.iter (fun str -> print_endline str);
+  1
 
-let rec read_new_line () =
-  match read_line () with
-  | Some line -> process_input line
-  | None -> end_program ()
+let print_result (result: int) : unit =
+  Printf.printf "Result: %d\n" result
 
-and process_input input =
-  if input = "exit" then
-    end_program ()
-  else begin
-    print_endline ("You entered: " ^ input);
-    Tokens.tokenize input |> List.iter (fun token ->
-      print_endline (Tokens.to_string token);
-      print_endline (Tokens.process_token token)
-    );
-    read_new_line ()
-  end
-
+open Tokens
+let rec main_loop () =
+  print_string "> ";  (* prompt *)
+  flush_all ();
+  try
+    let line = input_line stdin in
+    if line = "exit" then
+      end_program ()
+    else
+      (* Pipeline: *)
+      line
+      |> Tokens.tokenize           (* string -> token list *)
+      |> Tokens.parse_tokens       (* token list -> AST *)
+      |> evaluate_ast              (* AST -> result *)
+      |> print_result;             (* result -> unit *)
+      main_loop ()
+  with
+  | End_of_file -> end_program ()
+  | e -> 
+      Printf.printf "Error: %s\n" (Printexc.to_string e);
+      main_loop ()
 
 let start_program () =
     print_endline "Welcome to the simple calculator!";
     print_endline "Type 'exit' or press 'Ctrl+D' to quit.";
-    read_new_line ()
+
+    main_loop ()
 ;;
 
 let () = start_program ()

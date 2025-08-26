@@ -7,9 +7,9 @@
 (source
  (github username/reponame))
 
-(authors "Author Name <author@example.com>")
+(authors "Felix Wensky")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Felix Wensky")
 
 (license LICENSE)
 
